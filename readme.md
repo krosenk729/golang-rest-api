@@ -1,4 +1,4 @@
-#### REST API w GO 🐱‍🐉
+# REST API w GO 🐱‍🐉
 
 
 #### Golang 🐱‍🚀
@@ -8,6 +8,7 @@
 
 * https://dev.to/moficodes/build-your-first-rest-api-with-go-2gcj 
 * https://golangdocs.com/http-server-in-golang
+* https://golangbyexample.com/basic-http-server-go/
 * w docker https://golangnews.org/2020/08/building-a-rest-api-in-golang/
 
 

@@ -1,22 +1,32 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
+	"go-rest-api/pkg/db"
+	"go-rest-api/pkg/utils"
+
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Entry type
 type Entry struct {
-	// ID	primitive.ObjectID	`bson:"_id,omitempty"`
-	Date  string   `json:"date"`
+	Date  string   `json:"date,omitempty"`
 	Notes string   `json:"notes"`
 	Tags  []string `json:"tags,omitempty"`
 	Verb  string   `json:"verb,omitempty"`
+	// ID    primitive.ObjectID `bson:"_id,omitempty"`
+}
+
+func entryCol() *mongo.Collection {
+	return db.Client.Database("go").Collection("entries")
 }
 
 // GetHandler Get Entries
@@ -33,56 +43,39 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	return apiResponse(http.StatusOK, result) */
-	res := []Entry{
-		Entry{"2012-12-12", "did some immportant things", []string{"project 1", "value 1"}, "Implemented"},
-	}
+	col := entryCol()
+	cursor, err := col.Find(context.TODO(), bson.M{})
+	utils.CheckErr(err)
+
+	var res []bson.M
+	cursor.All(context.TODO(), &res)
+
 	json.NewEncoder(w).Encode(res)
 	// w.WriteHeader(http.StatusOK)
 	// w.Write([]byte(`{"message": "get called"}`))
 }
 
-func getMonthVal(m int) time.Month {
-	months := []time.Month{
-		time.January,
-		time.February,
-		time.March,
-		time.April,
-		time.May,
-		time.June,
-		time.July,
-		time.August,
-		time.September,
-		time.October,
-		time.November,
-		time.December,
+func parseDateFromPath(pathParams map[string]string, w http.ResponseWriter) time.Time {
+	yyyy, err := strconv.Atoi(pathParams["yyyy"])
+	if utils.CheckErr(err) {
+		APIResponse(http.StatusBadRequest, "invalid year", w)
 	}
-	return months[m-1]
+	mm, err := strconv.Atoi(pathParams["mm"])
+	if utils.CheckErr(err) || mm > 12 {
+		APIResponse(http.StatusBadRequest, "invalid month of the year", w)
+	}
+	dd, err := strconv.Atoi(pathParams["dd"])
+	if utils.CheckErr(err) || dd > 31 {
+		APIResponse(http.StatusBadRequest, "invalid day of the month", w)
+	}
+	timezone, _ := time.LoadLocation("America/New_York")
+	return time.Date(yyyy, utils.GetMonthVal(mm), dd, 12, 0, 0, 0, timezone)
 }
 
 // GetByDateHandler Get Entries
 func GetByDateHandler(w http.ResponseWriter, r *http.Request) {
-	pathParams := mux.Vars(r)
+	d := parseDateFromPath(mux.Vars(r), w)
 
-	yyyy, err := strconv.Atoi(pathParams["yyyy"])
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"message": "invalid date year"}`))
-	}
-	mm, err := strconv.Atoi(pathParams["mm"])
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"message": "invalid month of the year"}`))
-	}
-	dd, err := strconv.Atoi(pathParams["dd"])
-	if err != nil || dd > 31 {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"message": "invalid day year"}`))
-	}
-	timezone, _ := time.LoadLocation("America/New_York")
-	d := time.Date(yyyy, getMonthVal(mm), dd, 12, 0, 0, 0, timezone)
 	fmt.Println(d)
 	res := []Entry{
 		{d.String(), "did some immportant things", []string{"project 1", "value 1"}, "Implemented"},
@@ -90,6 +83,25 @@ func GetByDateHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 	// w.WriteHeader(http.StatusOK)
 	// w.Write([]byte(`{"message": "get called"}`))
+}
+
+// CreateByDateHandler Get Entries
+func CreateByDateHandler(w http.ResponseWriter, r *http.Request) {
+	d := parseDateFromPath(mux.Vars(r), w)
+
+	var e Entry
+	e.Date = d.String()
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&e)
+	if utils.CheckErr(err) {
+		APIResponse(http.StatusBadRequest, "invalid entry data", w)
+	}
+
+	collection := entryCol()
+	res, err := collection.InsertOne(context.TODO(), e)
+	utils.CheckErr(err)
+	json.NewEncoder(w).Encode(res)
 }
 
 // PostHandler Create Entry
@@ -102,7 +114,12 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 
 // NotFound Create Entry
 func NotFound(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusNotFound)
-	w.Write([]byte(`{"message": "not found"}`))
+	APIResponse(http.StatusNotFound, "not found", w)
+}
+
+// APIResponse
+func APIResponse(status int, message string, w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(status)
+	w.Write([]byte(message))
 }
