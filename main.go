@@ -24,6 +24,7 @@ func main() {
 	r.HandleFunc("/", handlers.GetHandler).Methods("GET")
 	r.HandleFunc("/{yyyy}/{mm}/{dd}", handlers.GetByDateHandler).Methods(http.MethodGet)
 	r.HandleFunc("/{yyyy}/{mm}/{dd}", handlers.CreateByDateHandler).Methods(http.MethodPost)
+	r.HandleFunc("/{yyyy}/{mm}/{dd}/entries", handlers.CreateByDateBulkHandler).Methods(http.MethodPost)
 	r.HandleFunc("/", handlers.NotFound)
 
 	http.Handle("/", r)
