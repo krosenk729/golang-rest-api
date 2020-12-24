@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"go-rest-api/pkg/db"
 	"go-rest-api/pkg/handlers"
@@ -28,5 +29,10 @@ func main() {
 	r.HandleFunc("/", handlers.NotFound)
 
 	http.Handle("/", r)
-	log.Fatal(http.ListenAndServe(":5050", nil))
+
+	PORT := os.Getenv("port")
+	if PORT == "" {
+		PORT = "5050"
+	}
+	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
