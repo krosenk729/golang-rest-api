@@ -5,7 +5,17 @@ services:
       dockerfile: Dockerfile
     container_name: go_rest_api
     ports:
-    - 8080:8080
-    - 5050:5050
+      - 8080:8080
+      - 5050:5050
     volumes:
-    - ./:/app
+      - ./:/app
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/app_development
+  mongo:
+    image: 'mongo'
+    volumes:
+      - 'mongo:/data/db'
+    ports:
+      - 2701:2701
+volumes:
+  mongo:
