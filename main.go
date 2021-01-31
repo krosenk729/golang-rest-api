@@ -22,11 +22,13 @@ func main() {
 	}
 
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/", handlers.GetHandler).Methods(http.MethodGet)
-	r.HandleFunc("/db", handlers.GetDbURL).Methods(http.MethodGet)
-	r.HandleFunc("/{yyyy}/{mm}/{dd}", handlers.GetByDateHandler).Methods(http.MethodGet)
-	r.HandleFunc("/{yyyy}/{mm}/{dd}", handlers.CreateByDateHandler).Methods(http.MethodPost)
-	r.HandleFunc("/{yyyy}/{mm}/{dd}/entries", handlers.CreateByDateBulkHandler).Methods(http.MethodPost)
+	fs := http.FileServer(http.Dir("./static"))
+	r.Handle("/", http.StripPrefix("/", fs))
+	r.HandleFunc("/api/", handlers.GetHandler).Methods(http.MethodGet)
+	r.HandleFunc("/api/db", handlers.GetDbURL).Methods(http.MethodGet)
+	r.HandleFunc("/api/{yyyy}/{mm}/{dd}", handlers.GetByDateHandler).Methods(http.MethodGet)
+	r.HandleFunc("/api/{yyyy}/{mm}/{dd}", handlers.CreateByDateHandler).Methods(http.MethodPost)
+	r.HandleFunc("/api/{yyyy}/{mm}/{dd}/entries", handlers.CreateByDateBulkHandler).Methods(http.MethodPost)
 	r.HandleFunc("/", handlers.NotFound)
 
 	http.Handle("/", r)
