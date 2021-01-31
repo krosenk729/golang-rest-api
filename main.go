@@ -1,8 +1,6 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,17 +9,11 @@ import (
 	"go-rest-api/pkg/handlers"
 	"go-rest-api/pkg/utils"
 
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
-type Message struct {
-	Text string
-}
-
-func routes() {
-	log.SetOutput(os.Stdout)
+func main() {
 	err := godotenv.Load(".env")
 
 	db.Connect()
@@ -44,13 +36,4 @@ func routes() {
 		PORT = "5050"
 	}
 	log.Fatal(http.ListenAndServe(":"+PORT, nil))
-}
-
-// HandleRequest prints message data
-func HandleRequest(ctx context.Context, data Message) (string, error) {
-	return fmt.Sprintf("Hello %s!", data.Text), nil
-}
-
-func main() {
-	lambda.Start(HandleRequest)
 }
