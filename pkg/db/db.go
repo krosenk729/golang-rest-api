@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"log"
 	"os"
 	"time"
 
@@ -19,6 +20,7 @@ func Connect() {
 	uri := os.Getenv("MONGO_URI")
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Second)
+	log.Println("Connecting", uri)
 	defer cancel()
 
 	clientOptions := options.Client().ApplyURI(uri)

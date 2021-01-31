@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -27,7 +27,7 @@ func GetMonthVal(m int) time.Month {
 // CheckErr
 func CheckErr(e error) bool {
 	if e != nil {
-		fmt.Println(e)
+		log.Println("************ Error ************ ", e)
 		return true
 	}
 	return false

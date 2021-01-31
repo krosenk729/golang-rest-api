@@ -3,7 +3,9 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -45,6 +47,7 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 	return apiResponse(http.StatusOK, result) */
 	col := entryCol()
 	cursor, err := col.Find(context.TODO(), bson.M{})
+	log.Println("GetHandler", err)
 	utils.CheckErr(err)
 
 	var res []bson.M
@@ -135,6 +138,12 @@ func CreateByDateBulkHandler(w http.ResponseWriter, r *http.Request) {
 	utils.CheckErr(err)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(insertMany)
+}
+
+// GetDbURL Create Entry
+func GetDbURL(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(os.Getenv("MONGO_URI")))
 }
 
 // NotFound Create Entry
