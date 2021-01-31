@@ -18,7 +18,7 @@ func main() {
 
 	db.Connect()
 	if utils.CheckErr(err) {
-		log.Fatal("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 
 	r := mux.NewRouter().StrictSlash(true)
