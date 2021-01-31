@@ -31,7 +31,7 @@ func main() {
 
 	http.Handle("/", r)
 
-	PORT := os.Getenv("port")
+	PORT := os.Getenv("PORT")
 	if PORT == "" {
 		PORT = "5050"
 	}
