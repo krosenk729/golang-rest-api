@@ -25,13 +25,13 @@ export default defineComponent({
   props: ['userDate'],
   data() {
     return {
-      daysOTW: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-      monthsOTY: ['Jan','Feb','Mar','April','May','June','July','Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+      daysOTW: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      monthsOTY: ['Jan', 'Feb', 'Mar', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
       numWeeksShown: 4,
-    }
+    };
   },
   computed: {
-    weeks() {
+    weeks(): Date[][] {
       const d = new Date(this.userDate);
       const base = d.setDate(d.getDate() - 14);
       const weeks = Array(this.numWeeksShown).fill('').map((_, i) => {
@@ -39,7 +39,7 @@ export default defineComponent({
         return Array(7).fill('').map((__, j) => new Date(sunday + Util.getDayNum(j)));
       });
       return weeks;
-    }
+    },
   },
   methods: {
     progressWeek(): void {
@@ -47,8 +47,8 @@ export default defineComponent({
     },
     getMonth(d: Date): string {
       return this.monthsOTY[d.getMonth()];
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -17,16 +17,23 @@
              </label>
              <label>
                 <span class="sr-only">Notes:</span>
-                <textarea v-model="e.notes" placeholder="Did some amazing things I'll describe here..."
-                    rows="3" style="resize:none"></textarea>
+                <textarea v-model="e.notes"
+                    placeholder="Did some amazing things I'll describe here..."
+                    rows="3"
+                    style="resize:none"></textarea>
               </label>
             <div class="track--tags">
                 <div v-for="(t, j) in e.tags" class="badge" v-bind:key="j">
-                    {{ t }} <button @click="deleteTag(e.tags, j)" aria-label="delete tag" title="Remove tag">✖</button>
+                    {{ t }} <button @click="deleteTag(e.tags, j)"
+                                    aria-label="delete tag"
+                                    title="Remove tag">✖</button>
                 </div>
                 <label for="tag" class="track--tags__new">
                     <span class="sr-only">Tag:</span>
-                    <input id="tag" v-model="tag" placeholder="Add new tag..." @keyup.enter="addTag(e, tag)" />
+                    <input id="tag"
+                          v-model="tag"
+                          placeholder="Add new tag..."
+                          @keyup.enter="addTag(e, tag)" />
                     <button @click="addTag(e, tag)">Add Tag</button>
                 </label>
               </div>
@@ -50,14 +57,16 @@ export default defineComponent({
       verbs: Verbs,
       entries: [{
         notes: 'Lorem ipsum',
-        tags: ['a', 'b', 'c', 'd', 'e', 'f']
-      }]
-    }
+        tags: ['a', 'b', 'c', 'd', 'e', 'f'],
+      }],
+    };
   },
   computed: {
     range() {
-      return Util.getDayOfWeek(this.userDate, 0).toDateString() + ' - ' + Util.getDayOfWeek(this.userDate, 6).toDateString()
-    }
+      const start = Util.getDayOfWeek(this.userDate, 0).toDateString();
+      const end = Util.getDayOfWeek(this.userDate, 6).toDateString();
+      return `${start} - ${end}`;
+    },
   },
   methods: {
     addTag(e, tag): void {
@@ -69,12 +78,12 @@ export default defineComponent({
       arr.splice(i, 1);
     },
     addEntry(): void {
-      this.entries.push({ notes: '', tags: [] })
+      this.entries.push({ notes: '', tags: [] });
     },
     deleteEntry(i): void {
       this.entries.splice(i, 1);
-    }
-  }
+    },
+  },
 });
 </script>
 
