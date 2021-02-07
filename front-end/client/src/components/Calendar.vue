@@ -1,63 +1,57 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router" target="_blank" rel="noopener">router</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-mocha" target="_blank" rel="noopener">unit-mocha</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-typescript" target="_blank" rel="noopener">typescript</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="calendar">
+    <button class="">Change weeks -</button>
+    <table class="calendar__wrapper">
+      <tr class="calendar__row calendar__row--days">
+        <th class="calendar__cell" v-for="d in daysOTW" v-bind:key="d">{{ d }}</th>
+      </tr>
+      <tr class="calendar__row" v-for="w in weeks" v-bind:key="w">
+        <td class="calendar__cell" v-for="(d, dayNum) in w" v-bind:key="d">
+          {{ d.getDate() }}
+          <div v-if="dayNum == 0 || d.getDate() == 1">{{ getMonth(d) }}</div>
+        </td>
+        </tr>
+    </table>
+    <button class="">Change weeks +</button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import * as Util from '../shared/utils';
 
 export default defineComponent({
-  name: 'HelloWorld',
-  props: {
-    msg: String,
+  name: 'Caelndar',
+  props: ['userDate'],
+  data() {
+    return {
+      daysOTW: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+      monthsOTY: ['Jan','Feb','Mar','April','May','June','July','Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+      numWeeksShown: 4,
+    }
   },
+  computed: {
+    weeks() {
+      const d = new Date(this.userDate);
+      const base = d.setDate(d.getDate() - 14);
+      const weeks = Array(this.numWeeksShown).fill('').map((_, i) => {
+        const sunday = base + Util.getDayNum(7 * i);
+        return Array(7).fill('').map((__, j) => new Date(sunday + Util.getDayNum(j)));
+      });
+      return weeks;
+    }
+  },
+  methods: {
+    progressWeek(): void {
+      // emit event
+    },
+    getMonth(d: Date): string {
+      return this.monthsOTY[d.getMonth()];
+    }
+  }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 </style>
