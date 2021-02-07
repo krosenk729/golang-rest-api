@@ -1,39 +1,12 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <!-- <router-view/> -->
+  <router-view/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-type Direction = 1 | -1;
-
 export default defineComponent({
   name: 'App',
-  data() {
-    return {
-      currentTab: 'Review',
-      tabs: ['Calendar', 'Track', 'Review'],
-      userDate: new Date(),
-    };
-  },
-  methods: {
-    changeWeek(dir: Direction = 1): void {
-      const n = this.userDate.setDate(this.userDate.getDate() + (dir * 7));
-      this.userDate = new Date(n);
-    },
-  },
-  computed: {
-    currentTabComponent(): string {
-      return `tab-${this.currentTab.toLowerCase()}`;
-    },
-    formattedDate(): string {
-      return this.userDate.toDateString();
-    },
-  },
 });
 </script>
 

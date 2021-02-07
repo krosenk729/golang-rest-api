@@ -47,7 +47,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as Util from '../shared/utils';
-import { Verbs } from '../shared/models';
+import { Entry, Verbs } from '../shared/models';
 
 export default defineComponent({
   name: 'Track',
@@ -59,28 +59,29 @@ export default defineComponent({
         notes: 'Lorem ipsum',
         tags: ['a', 'b', 'c', 'd', 'e', 'f'],
       }],
+      tag: '',
     };
   },
   computed: {
-    range() {
+    range(): string {
       const start = Util.getDayOfWeek(this.userDate, 0).toDateString();
       const end = Util.getDayOfWeek(this.userDate, 6).toDateString();
       return `${start} - ${end}`;
     },
   },
   methods: {
-    addTag(e, tag): void {
+    addTag(e: Entry, tag: string): void {
       if (!tag.trim()) return;
       e.tags.push(tag.trim());
       this.tag = '';
     },
-    deleteTag(arr, i): void {
+    deleteTag(arr: string[], i: number): void {
       arr.splice(i, 1);
     },
     addEntry(): void {
       this.entries.push({ notes: '', tags: [] });
     },
-    deleteEntry(i): void {
+    deleteEntry(i: number): void {
       this.entries.splice(i, 1);
     },
   },

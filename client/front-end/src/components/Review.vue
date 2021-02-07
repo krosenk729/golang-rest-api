@@ -60,6 +60,7 @@ export default defineComponent({
       verbList: [] as HashValue[],
       selectedTag: undefined as undefined|string,
       selectedVerb: undefined as undefined|string,
+      res: {} as Entry[],
     };
   },
   async created() {
@@ -81,8 +82,8 @@ export default defineComponent({
       return { tagsHash, verbHash };
     }, { tagsHash: {}, verbHash: {} });
 
-    this.tagsList = Object.values(tagsHash).sort((a, b) => b.count - a.count);
-    this.verbList = Object.values(verbHash).sort((a, b) => b.count - a.count);
+    this.tagsList = Object.values(tagsHash).sort((a: HashValue, b: HashValue) => b.count - a.count);
+    this.verbList = Object.values(verbHash).sort((a: HashValue, b: HashValue) => b.count - a.count);
   },
   methods: {
     expandTag(tag?: string): void {
@@ -93,10 +94,12 @@ export default defineComponent({
     },
   },
   computed: {
-    selectedTagEntries(): string[] {
-      return this.selectedTag ? this.res.filter((e) => e.tags.includes(this.selectedTag)) : [];
+    selectedTagEntries(): Entry[] {
+      return this.selectedTag
+        ? this.res.filter((e) => e.tags.includes(this.selectedTag as string))
+        : [];
     },
-    selectedVerbEntries(): string[] {
+    selectedVerbEntries(): Entry[] {
       return this.selectedVerb ? this.res.filter((e) => e.verb === this.selectedVerb) : [];
     },
   },
