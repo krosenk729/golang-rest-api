@@ -1,10 +1,6 @@
 /* eslint-disable arrow-body-style, no-shadow */
-
-type Direction = 1 | -1;
-
-interface UserDateState {
-  date: Date;
-}
+import * as Util from '../shared/utils';
+import { Direction, UserDateState } from './user-date.types';
 
 const state = (): UserDateState => ({
   date: new Date(),
@@ -14,6 +10,12 @@ const state = (): UserDateState => ({
 const getters = {
   formattedDate: (state: UserDateState) => {
     return state.date.toDateString();
+  },
+  weekStart: (state: UserDateState) => {
+    return Util.getDayOfWeek(state.date, 0);
+  },
+  weekEnd: (state: UserDateState) => {
+    return Util.getDayOfWeek(state.date, 6);
   },
 };
 

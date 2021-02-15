@@ -1,6 +1,6 @@
 <template>
   <div class="track">
-    <h1>Track Week: {{ range }}</h1>
+    <h1>Track Week: {{ range() }}</h1>
     <p>Add entries for each thing you accomplished this week</p>
     <br>
     <fieldset v-for="(e, i) in entries" class="track--entry" v-bind:key="i">
@@ -31,27 +31,31 @@
                 <label for="tag" class="track--tags__new">
                     <span class="sr-only">Tag:</span>
                     <input id="tag"
-                          v-model="tag"
+                          v-model="e.newTag"
                           placeholder="Add new tag..."
-                          @keyup.enter="addTag(e, tag)" />
-                    <button @click="addTag(e, tag)">Add Tag</button>
+                          @keyup.enter="addTag(e, e.newTag)" />
+                    <button @click="addTag(e, e.newTag)">Add Tag</button>
                 </label>
               </div>
         </div><!-- rhs -->
     </fieldset>
     <button @click="addEntry">Add Entry</button>
-    <button @click="alert('TODO')">Save</button>
+    <button @click="saveForm">Save</button>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapState, mapGetters } from 'vuex';
 import * as Util from '../shared/utils';
 import { Entry, Verbs } from '../shared/models';
 
+interface EntryInputs extends Entry {
+  newTag?: string|undefined;
+}
+
 export default defineComponent({
   name: 'Track',
-  props: ['userDate'],
   data() {
     return {
       verbs: Verbs,
@@ -63,17 +67,25 @@ export default defineComponent({
     };
   },
   computed: {
-    range(): string {
-      const start = Util.getDayOfWeek(this.userDate, 0).toDateString();
-      const end = Util.getDayOfWeek(this.userDate, 6).toDateString();
-      return `${start} - ${end}`;
-    },
+    ...mapState({
+      userDate: 'date',
+    }),
+    ...mapGetters([
+      'formattedDate',
+      'weekStart',
+      'weekEnd',
+    ]),
   },
   methods: {
-    addTag(e: Entry, tag: string): void {
+    range(): string {
+      const start = this.weekStart.toDateString();
+      const end = this.weekEnd.toDateString();
+      return `${start} - ${end}`;
+    },
+    addTag(e: EntryInputs, tag: string): void {
       if (!tag.trim()) return;
       e.tags.push(tag.trim());
-      this.tag = '';
+      e.newTag = '';
     },
     deleteTag(arr: string[], i: number): void {
       arr.splice(i, 1);
@@ -83,6 +95,9 @@ export default defineComponent({
     },
     deleteEntry(i: number): void {
       this.entries.splice(i, 1);
+    },
+    saveForm(): void {
+      console.log('*********** this.entries', this.entries, Object.values(this.entries));
     },
   },
 });

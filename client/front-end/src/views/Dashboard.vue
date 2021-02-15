@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'Dashboard',
@@ -54,9 +54,6 @@ export default defineComponent({
     },
   },
   computed: {
-    ...mapState({
-      userDate: 'date',
-    }),
     ...mapGetters([
       'formattedDate',
     ]),
