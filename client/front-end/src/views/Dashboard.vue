@@ -10,9 +10,9 @@
         <router-link :to="tab.path">{{ tab.label }}</router-link>
       </li>
       <li>
-        <button @click="changeWeek(-1)">-</button>
+        <button @click="decreaseWeek()">-</button>
         {{ formattedDate }}
-        <button @click="changeWeek(1)">+</button>
+        <button @click="increaseWeek()">+</button>
       </li>
     </ul>
   </nav>
@@ -22,8 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-type Direction = 1 | -1;
+import { mapState, mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'Dashboard',
@@ -44,22 +43,23 @@ export default defineComponent({
           path: '/review',
         },
       ],
-      userDate: new Date(),
     };
   },
   methods: {
-    changeWeek(dir: Direction = 1): void {
-      const n = this.userDate.setDate(this.userDate.getDate() + (dir * 7));
-      this.userDate = new Date(n);
+    increaseWeek() {
+      this.$store.dispatch('increaseWeek');
+    },
+    decreaseWeek() {
+      this.$store.dispatch('decreaseWeek');
     },
   },
   computed: {
-    currentTabComponent(): string {
-      return `tab-${this.currentTab.toLowerCase()}`;
-    },
-    formattedDate(): string {
-      return this.userDate.toDateString();
-    },
+    ...mapState({
+      userDate: 'date',
+    }),
+    ...mapGetters([
+      'formattedDate',
+    ]),
   },
 });
 </script>

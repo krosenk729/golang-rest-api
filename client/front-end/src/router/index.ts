@@ -14,6 +14,7 @@ const routes: Array<RouteRecordRaw> = [
       { path: 'calendar', name: 'Calendar', component: Calendar },
       { path: 'review', name: 'Review', component: Review },
       { path: 'track', name: 'Track', component: Track },
+      { path: '', redirect: { name: 'Calendar' } },
     ],
   },
   {

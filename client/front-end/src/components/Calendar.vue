@@ -5,10 +5,10 @@
       <tr class="calendar__row calendar__row--days">
         <th class="calendar__cell" v-for="d in daysOTW" v-bind:key="d">{{ d }}</th>
       </tr>
-      <tr class="calendar__row" v-for="w in weeks" v-bind:key="w">
+      <tr class="calendar__row" v-for="(w, weekNum) in weeks" v-bind:key="w">
         <td class="calendar__cell" v-for="(d, dayNum) in w" v-bind:key="d">
           {{ d.getDate() }}
-          <div v-if="dayNum == 0 || d.getDate() == 1">{{ getMonth(d) }}</div>
+          <div v-if="(weekNum == 0 && dayNum == 0) || d.getDate() == 1">{{ getMonth(d) }}</div>
         </td>
         </tr>
     </table>
@@ -18,11 +18,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapState, mapGetters } from 'vuex';
 import * as Util from '../shared/utils';
 
 export default defineComponent({
-  name: 'Caelndar',
-  props: ['userDate'],
+  name: 'Calendar',
   data() {
     return {
       daysOTW: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -31,8 +31,14 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapState({
+      userDate: 'date',
+    }),
+    ...mapGetters([
+      'formattedDate',
+    ]),
     weeks(): Date[][] {
-      const d = new Date(this.userDate);
+      const d = this.$store.state.userDate.date;
       const base = d.setDate(d.getDate() - 14);
       const weeks = Array(this.numWeeksShown).fill('').map((_, i) => {
         const sunday = base + Util.getDayNum(7 * i);
