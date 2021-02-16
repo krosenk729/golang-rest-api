@@ -1,23 +1,30 @@
 services:
-  go_api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      # target: env
-    # command: ["go", "run", "main.go"]
-    container_name: go_rest_api
+  backend:
+    image: golang:1.14-alpine
+    networks: 
+      - server    
+    volumes: 
+      - .:/srv
+    working_dir: /srv
+    ports:
+      - 5050:5050
+    command: go run main.go
+  frontend:
+    # image: node:14-alpine
+    networks: 
+      - server    
+    volumes: 
+      - ./build:/client/front-end
+    working_dir: /build
     ports:
       - 8080:8080
-      - 5050:5050
-    volumes:
-      - ./:/app
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/app_development
-      - PORT=5050
-    security_opt:
-      - "seccomp:unconfined" # Extra option to allow debugging.
-    cap_add:
-      - SYS_PTRACE # Recommended option for debugging only.
+    depends_on:
+      - backend
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: npm run serve
+    
   mongo:
     image: 'mongo'
     command: ["-f",  "/etc/mongo.config"]
@@ -29,3 +36,6 @@ services:
       - 2701:2701
 volumes:
   mongo:
+networks:
+  server:
+    driver: bridge

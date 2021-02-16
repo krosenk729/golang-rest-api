@@ -47,7 +47,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapState, mapGetters } from 'vuex';
-import * as Util from '../shared/utils';
 import { Entry, Verbs } from '../shared/models';
 
 interface EntryInputs extends Entry {

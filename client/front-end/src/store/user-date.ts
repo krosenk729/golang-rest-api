@@ -22,6 +22,7 @@ const getters = {
 // actions
 const actions = {
   increaseWeek({ commit }: { commit: Function }) {
+    console.log('************');
     commit('changeWeek', 1);
   },
   decreaseWeek({ commit }: { commit: Function }) {
@@ -32,6 +33,7 @@ const actions = {
 // mutations
 const mutations = {
   changeWeek(state: UserDateState, dir: Direction) {
+    console.log('************', dir, state.date.getDate(), (dir * 7), state.date.getDate() + (dir * 7));
     const n = state.date.setDate(state.date.getDate() + (dir * 7));
     state.date = new Date(n);
   },

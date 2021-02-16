@@ -38,7 +38,6 @@ export default defineComponent({
       'formattedDate',
     ]),
     weeks(): Date[][] {
-      console.log('************* getters', this.$store.getters);
       const d = this.$store.state.userDate.date;
       const base = d.setDate(d.getDate() - 14);
       const weeks = Array(this.numWeeksShown).fill('').map((_, i) => {

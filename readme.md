@@ -1,5 +1,8 @@
-# REST API w GO 🐱‍🐉
+# REST API w GO 🐱‍🐉 & VUE FE 🦊
 
+#### Feature TODOs
+* GET route by date range
+* put verbs in backend and allow customization
 
 #### Golang 🐱‍🚀
 
@@ -14,6 +17,7 @@
 * https://www.callicoder.com/docker-golang-image-container-example/
 * https://medium.com/@rrgarciach/bootstrapping-a-go-application-with-docker-47f1d9071a2a
 * https://medium.com/rahasak/golang-mongodb-client-with-authentication-ab24ac099147
+* https://github.com/benc-uk/vuego-demoapp
 
 
 #### AWS 🐱‍🏍
