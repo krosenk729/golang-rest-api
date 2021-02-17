@@ -8,6 +8,9 @@ const state = (): UserDateState => ({
 
 // getters
 const getters = {
+  userDate: (state: UserDateState) => {
+    return state.date;
+  },
   formattedDate: (state: UserDateState) => {
     return state.date.toDateString();
   },

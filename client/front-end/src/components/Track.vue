@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { Entry, Verbs } from '../shared/models';
 
 interface EntryInputs extends Entry {
@@ -66,16 +66,17 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState({
-      userDate: 'date',
-    }),
     ...mapGetters([
+      'userDate',
       'formattedDate',
       'weekStart',
       'weekEnd',
     ]),
   },
   methods: {
+    ...mapActions([
+      'addEntries',
+    ]),
     range(): string {
       const start = this.weekStart.toDateString();
       const end = this.weekEnd.toDateString();
@@ -96,7 +97,10 @@ export default defineComponent({
       this.entries.splice(i, 1);
     },
     saveForm(): void {
-      console.log('*********** this.entries', this.entries, Object.values(this.entries));
+      this.addEntries({ date: this.userDate, newEntries: this.entries })
+        .then(() => {
+          this.$router.push('calendar');
+        });
     },
   },
 });

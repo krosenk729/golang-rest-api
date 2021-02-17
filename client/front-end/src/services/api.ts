@@ -29,11 +29,12 @@ export default {
     dd: number|string,
     entryData: Entry[],
   ) {
+    console.log('*******************createEntries');
     try {
       const res = await fetch(`${host}/api/${yyyy}/${mm}/${dd}/entries`, {
         ...options,
         method: 'POST',
-        body: entryData as unknown as FormData,
+        body: JSON.stringify(entryData),
       });
       return res.json();
     } catch (err) {

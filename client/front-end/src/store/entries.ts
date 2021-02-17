@@ -2,6 +2,7 @@
 import api from '@/services/api';
 import { Entry } from '@/shared/models';
 import {
+  AddEntriesPayload,
   EntryState,
   HashValue,
   ListReduceParams,
@@ -56,14 +57,14 @@ const actions = {
     const entries = await api.getAll();
     commit('updateEntries', entries);
   },
-  async clearData({ commit }: { commit: Function }) {
+  clearData({ commit }: { commit: Function }) {
     commit('updateEntries', []);
   },
-  // async addEntries({ commit }: { commit: Function }, date: Date, newEntries: Entry[]) {
-  //   const [mm, dd, yyyy] = date.toLocaleDateString().split('/');
-  //   const entries = await api.createEntries(yyyy, mm, dd, newEntries);
-  //   commit('addEntries', entries);
-  // },
+  async addEntries({ commit }: { commit: Function }, payload: AddEntriesPayload) {
+    const [mm, dd, yyyy] = payload.date.toLocaleDateString().split('/');
+    const entries = await api.createEntries(yyyy, mm, dd, payload.newEntries);
+    commit('addEntries', entries);
+  },
 };
 
 // mutations

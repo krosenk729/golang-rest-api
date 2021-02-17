@@ -13,6 +13,11 @@ export interface EntryState {
   entries: Entry[];
 }
 
+export interface AddEntriesPayload {
+  date: Date;
+  newEntries: Entry[];
+}
+
 export interface ListReduceParams {
   tagsHash: CountHash;
   verbHash: CountHash;
