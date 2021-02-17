@@ -72,12 +72,12 @@ export default defineComponent({
     ]),
     selectedTagEntries(): Entry[] {
       return this.selectedTag
-        ? this.entries.filter((e: Entry) => e.tags.includes(this.selectedTag as string))
+        ? this.entries?.entries?.filter((e: Entry) => e.tags?.includes(this.selectedTag as string))
         : [];
     },
     selectedVerbEntries(): Entry[] {
       return this.selectedVerb
-        ? this.entries.filter((e: Entry) => e.verb === this.selectedVerb)
+        ? this.entries?.entries?.filter((e: Entry) => e.verb === this.selectedVerb)
         : [];
     },
   },

@@ -12,3 +12,8 @@ export interface CountHash {
 export interface EntryState {
   entries: Entry[];
 }
+
+export interface ListReduceParams {
+  tagsHash: CountHash;
+  verbHash: CountHash;
+}

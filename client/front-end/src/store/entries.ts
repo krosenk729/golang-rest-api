@@ -4,7 +4,7 @@ import { Entry } from '@/shared/models';
 import {
   EntryState,
   HashValue,
-  CountHash,
+  ListReduceParams,
 } from './entries.types';
 
 const state = (): EntryState => ({
@@ -15,7 +15,7 @@ const state = (): EntryState => ({
 const getters = {
   entryWeeks(state: EntryState) {
     const weeksHash = state.entries.reduce((hash, { date }) => {
-      // TODO
+      // TODO @katherine - aggreagte weeks
       hash[date as string] = date;
       return hash;
     }, {} as { [index: string]: string|Date|undefined });
@@ -29,16 +29,12 @@ const getters = {
     return Object.keys(dateHash);
   },
   lists(state: EntryState) {
-    interface ReduceParams {
-      tagsHash: CountHash;
-      verbHash: CountHash;
-    }
-
     const {
       tagsHash,
       verbHash,
-    } = state.entries.reduce(({ tagsHash, verbHash }: ReduceParams, { tags, verb }) => {
-      tags.forEach((t) => {
+    } = state.entries.reduce(({ tagsHash, verbHash }: ListReduceParams, { tags, verb }) => {
+      // eslint-disable-next-line no-unused-expressions
+      tags?.forEach((t) => {
         tagsHash[t] = tagsHash[t] || { tag: t, count: 0 };
         tagsHash[t].count += 1;
       });
