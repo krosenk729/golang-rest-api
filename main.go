@@ -40,9 +40,9 @@ func main() {
 	r.HandleFunc("/api/{yyyy}/{mm}/{dd}", handlers.GetByDateHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/{yyyy}/{mm}/{dd}", handlers.CreateByDateHandler).Methods(http.MethodPost)
 	r.HandleFunc("/api/{yyyy}/{mm}/{dd}/entries", handlers.CreateByDateBulkHandler).Methods(http.MethodPost)
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./build")))
+	r.PathPrefix("/fe").Handler(http.FileServer(http.Dir("./build")))
 	r.HandleFunc("/", handlers.NotFound)
-	// r.Use(enableCorsMiddleware)
+	r.Use(enableCorsMiddleware)
 	// https://github.com/gorilla/mux#serving-single-page-applications
 
 	http.Handle("/", r)

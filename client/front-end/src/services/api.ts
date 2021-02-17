@@ -1,26 +1,47 @@
 import { Entry } from '@/shared/models';
-import axios from 'axios';
 
-const host = process.env.NODE_ENV === 'production'
-  ? 'https://go--rest--api.herokuapp.com'
-  : 'http://localhost:5050';
-const headers = {
-  'Access-Control-Allow-Origin': '*',
-  'Referrer-Policy': 'origin',
-};
+const debugMode = process.env.NODE_ENV !== 'production';
+const host = debugMode ? 'http://localhost:5050' : '';
+const options = {
+  headers: {
+    accept: 'application/json, text/plain, */*',
+  },
+  mode: 'cors',
+  credentials: 'omit',
+} as RequestInit;
 
 export default {
   async getAll() {
-    const res = await axios.get(`${host}/api/`, { headers });
-    return res.data;
+    try {
+      const res = await fetch(`${host}/api/`, options);
+      return res.json();
+    } catch (err) {
+      if (debugMode) {
+        console.error('<><><><><><><><><><><><><><><><><><><><><><><><>');
+        console.error(err);
+      }
+      return [];
+    }
   },
   async createEntries(
-    yyyy: number | string,
-    mm: number | string,
-    dd: number | string,
+    yyyy: number|string,
+    mm: number|string,
+    dd: number|string,
     entryData: Entry[],
   ) {
-    const res = await axios.post(`${host}/api/${yyyy}/${mm}/${dd}/entries`, entryData);
-    return res.data;
+    try {
+      const res = await fetch(`${host}/api/${yyyy}/${mm}/${dd}/entries`, {
+        ...options,
+        method: 'POST',
+        body: entryData as unknown as FormData,
+      });
+      return res.json();
+    } catch (err) {
+      if (debugMode) {
+        console.error('<><><><><><><><><><><><><><><><><><><><><><><><>');
+        console.error(err);
+      }
+      return {};
+    }
   },
 };

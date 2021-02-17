@@ -8,7 +8,10 @@ services:
     working_dir: /srv
     ports:
       - 5050:5050
-    command: go run main.go
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # command: go run main.go
   frontend:
     # image: node:14-alpine
     networks: 
